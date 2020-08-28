@@ -11,7 +11,7 @@ class Crawler():
 
     def GetHistory(self, StockNo, Year, Month):
         ts = str(datetime.datetime.now().timestamp()).split('.')[0]
-        
+
         self._logger.debug(f"timestamp = {ts}")
 
         dateStr = f'{Year}{Month:02d}'
@@ -20,12 +20,12 @@ class Crawler():
                         'date':dateStr,
                         'stockNo':StockNo,
                         '_':ts}
-        print(requestData)
+
         response = requests.get(self._endpoint,requestData)
-        
+
         s = response.text
         data = json.loads(s)
 
-        print(data)
+        self._logger.debug(f'data = {json.dumps(data, ensure_ascii=False).encode("utf8")}')
         return data
 
