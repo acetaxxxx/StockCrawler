@@ -1,14 +1,29 @@
 ﻿import pymongo
+from pymongo.collection import Collection
 
-class StockHistory():
 
-    def __init__(self,connection_Str):
+class StockRepository():
+    def __init__(self, connection_Str):
         client = pymongo.MongoClient(connection_Str)
         self._db = client.stock
-        self._history = self._db['History']
 
-    def Select(self):
+    def GetStockHistory(self):
+        return StockCollection(self._db, 'DailyHistory')
 
-        return self._history
-    def Insert(self):
-        return True
+    def GetMonitorStock(self):
+        return StockCollection(self._db, 'MonitorStock')
+
+
+class StockCollection():
+    def __init__(self, db, collection_Name):
+        self._collection = Collection(db, name=collection_Name)
+
+    def Select(self, condition=None, filter=None):
+        if condition is None:
+            return self._collection.find()
+        return self._collection.find(condition)
+
+    def Insert(self, item=None):
+        if item is None:
+            return False
+        self._collection.insert_one(item)
