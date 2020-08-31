@@ -14,7 +14,7 @@ class Crawler():
 
         self._logger.debug(f"timestamp = {ts}")
 
-        dateStr = f'{Year}{Month:02d}'
+        dateStr = f'{Year}{Month:02d}01'
         url = f'{self._endpoint}?response=json&date={dateStr}&stockNo={StockNo}&_={ts}'
         requestData = {'response' :'json',
                         'date':dateStr,
