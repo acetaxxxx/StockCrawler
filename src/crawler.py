@@ -16,16 +16,18 @@ class Crawler():
 
         dateStr = f'{Year}{Month:02d}01'
         url = f'{self._endpoint}?response=json&date={dateStr}&stockNo={StockNo}&_={ts}'
-        requestData = {'response' :'json',
-                        'date':dateStr,
-                        'stockNo':StockNo,
-                        '_':ts}
+        requestData = {
+            'response': 'json',
+            'date': dateStr,
+            'stockNo': StockNo,
+            '_': ts
+        }
 
-        response = requests.get(self._endpoint,requestData)
+        response = requests.get(self._endpoint, requestData)
 
         s = response.text
         data = json.loads(s)
 
-        self._logger.debug(f'data = {json.dumps(data, ensure_ascii=False).encode("utf8")}')
+        self._logger.debug(
+            f'data = {json.dumps(data, ensure_ascii=False).encode("utf8")}')
         return data
-
