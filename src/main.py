@@ -3,6 +3,7 @@ import logging
 import configparser
 from repo.stockHistory import StockRepository
 import datetime
+import time
 
 
 def ExtractItem(list_of_data):
@@ -39,12 +40,19 @@ if __name__ == "__main__":
     monitorStockCollect = historyRepo.GetMonitorStock()
     historyCollect = historyRepo.GetStockHistory()
 
+    logger  = logging.getLogger('Main')
+
     for stockInfo in monitorStockCollect.Select():
         no = stockInfo['StockNumber']
-        historyData = crawler.GetHistory(no, 2020, 2)
-        print(historyData)
 
-        for item in historyData['data']:
-            dictItem = ExtractItem(item)
-            dictItem['StockNo'] = no
-            historyCollect.Insert(dictItem)
+        for year in range(2012,2021):
+            for month in range(1,13):
+                try:
+                    historyData = crawler.GetHistory(no, year, month)
+                    time.sleep(3.5)
+                    for item in historyData['data']:
+                        dictItem = ExtractItem(item)
+                        dictItem['StockNo'] = no
+                        historyCollect.InsertOrUpdate(dictItem)
+                except:
+                    logger.error(f'Datetime: {datetime.datetime.now()} ,stockNo :{no},year {year},month: {month} exception')

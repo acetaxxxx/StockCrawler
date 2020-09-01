@@ -1,5 +1,6 @@
 ﻿import pymongo
 from pymongo.collection import Collection
+import logging
 
 
 class StockRepository():
@@ -17,6 +18,7 @@ class StockRepository():
 class StockCollection():
     def __init__(self, db, collection_Name):
         self._collection = Collection(db, name=collection_Name)
+        self._logger = logging.getLogger(f'StockCollection_{collection_Name}')
 
     def Select(self, condition=None, filter=None):
         if condition is None:
@@ -26,4 +28,19 @@ class StockCollection():
     def Insert(self, item=None):
         if item is None:
             return False
+        self._logger.debug(f'insert {item}')
         self._collection.insert_one(item)
+
+    def InsertOrUpdate(self, item=None):
+        if item is None:
+            return False
+        condition = dict({
+            'TradeDate': item['TradeDate'],
+            'StockNo': item['StockNo']
+        })
+        temp = self.Select(condition=condition)
+
+        if temp.count() < 1:
+            return self.Insert(item)
+        self._logger.info(f'item {item} is inserted.')
+        return True  ## add update
